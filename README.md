@@ -41,16 +41,16 @@ if car detection is fine:
 >* 1. Run pipeline on a video stream(both on test_video.mp4 and project_video.mp4)
 
 [//]: # (Image References)
-[image1]: ./examples/origin_img.png
-[image2]: ./examples/HOG_example.png
-[image21]: ./examples/color_hist.png
-[image22]: ./examples/bin_spatial.png
-[image3]: ./examples/350-500windows.png.png
-[image4]: ./examples/400-650windows.png.png
-[image5]: ./examples/multi-windows.png
-[image6]: ./examples/heatall.png.png
-[video1]: ./project_video.mp4
-
+[image1]: ./output_images/origin_img.png
+[image2]: ./output_images/HOG_example.png
+[image21]: ./output_images/color_hist.png
+[image22]: ./output_images/bin_spatial.png
+[image3]: ./output_images/350-500windows.png
+[image4]: ./output_images/400-650windows.png
+[image5]: ./output_images/multi-windows.png
+[image6]: ./output_images/heatall.png
+[video1]: ./project_video-out.mp4
+[video2]: ./test_video-out.mp4
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
 ### Here I will consider the rubric points individually and describe how I addressed each point in my implementation.  
 
@@ -132,7 +132,7 @@ I don't know what size the car will be, and also where the car in images. So I d
 2. y 400 to 656 with scaling factor 1.5:
 ![alt text][image4]
 3. Combine the two windows.
-
+![alt text][image5]
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 The follow imags can show how my pipeline is working:
 
@@ -143,9 +143,9 @@ The follow imags can show how my pipeline is working:
 
 ### Video Implementation
 
-#### 1. Provide a link to your final video output.  
-Here's a [link to my video result](./project_video.mp4)
-
+#### 1. Provide a link to your final video output. 
+Here's a [link to my test video result](./test_video-out.mp4) 
+Here's a [link to my project video result](./project_video-out.mp4)
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
 
@@ -153,7 +153,41 @@ Here's a [link to my video result](./project_video.mp4)
 here is images to show this flow:
 ![alt text][image6]
 
-
+and here is final code to process image:
+```python
+def process_image(img):
+    boxes_list=[]
+    
+    ystart = 380
+    ystop = 500
+    scale = 1
+    out_img, boxes = find_cars(img, ystart, ystop, scale, colorspace, hog_channel,
+                        svc, X_scaler,
+                        orient, pix_per_cell, cell_per_block, spatial_size, hist_bins,
+                       color_feat)
+    boxes_list.append(boxes)
+    
+    ystart = 400
+    ystop = 656
+    scale = 1.5
+    
+    out_img, boxes = find_cars(img, ystart, ystop, scale, colorspace, hog_channel,
+                        svc, X_scaler,
+                        orient, pix_per_cell, cell_per_block, spatial_size, hist_bins,
+                       color_feat)
+    boxes_list.append(boxes)
+    
+    boxes_list = [item for sublist in boxes_list for item in sublist]
+    # make a heat-map 
+    heat_img = np.zeros_like(img[:,:,0]).astype(np.float)
+    heat_img = add_heat(heat_img, boxes)
+    heat_img = apply_threshold(heat_img, 2)
+    
+    #Using label to find the box.
+    labels = label(heat_img)    
+    draw_img = draw_labeled_bboxes(np.copy(img), labels)
+    return draw_img
+```
 ---
 
 ### Discussion
