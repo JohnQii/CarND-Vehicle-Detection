@@ -42,11 +42,11 @@ if car detection is fine:
 
 [//]: # (Image References)
 [image1]: ./examples/origin_img.png
-[image2]: ./examples/HOG_example.jpg
-[image21]: ./examples/color_hist.jpg
-[image22]: ./examples/bin_spatial.jpg
-[image3]: ./examples/350-500windows.png.jpg
-[image4]: ./examples/400-650windows.png.jpg
+[image2]: ./examples/HOG_example.png
+[image21]: ./examples/color_hist.png
+[image22]: ./examples/bin_spatial.png
+[image3]: ./examples/350-500windows.png.png
+[image4]: ./examples/400-650windows.png.png
 [image5]: ./examples/multi-windows.png
 [image6]: ./examples/heatall.png.png
 [video1]: ./project_video.mp4
