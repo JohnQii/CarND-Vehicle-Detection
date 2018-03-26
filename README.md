@@ -136,6 +136,11 @@ I don't know what size the car will be, and also where the car in images. So I d
 ![alt text][image4]
 3. Combine the two windows.
 ![alt text][image5]
+
+Finally, I combine 3 windows as below: 
+    ystart = 300     ystop = 400     scale = 0.8
+    ystart = 350     ystop = 500     scale = 1.0 
+    ystart = 350    ystop = 656     scale = 1.5
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 The follow imags can show how my pipeline is working:
 
@@ -203,13 +208,15 @@ heat_img = add_heat(heat_img, boxes)
             combined = sum(heatmaps)
             threshold = 2
             if len(heatmaps) == 1:                
-                threshold = 2;
+                threshold = 1;
             elif len(heatmaps) == 2:
-                threshold = 4;
+                threshold = 2;
             elif len(heatmaps) == 3:
-                threshold = 4;
+                threshold = 2;
             elif len(heatmaps) == 4:
-                threshold = 10;
+                threshold = 3;
+            else:
+                threshold = 5;
             heat_img = apply_threshold(combined,threshold)
     else:
         heat_img = apply_threshold(heat_img,1)
