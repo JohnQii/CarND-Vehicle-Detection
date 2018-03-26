@@ -101,6 +101,8 @@ Here is an example of spatital bin feature:
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
 After I tried many combinations of parameters, I choose the the parameters which had highest test Accuracy in SVM classifier：
+
+
 | hog_feat | spatial_feat | hist_feat | color_sapce | orient | pix_per_cell | cell_per_block | hog_channel | Test Accuracy |
 |:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|
 |True| False | False |YUV |9 |16 |2 |ALL |0.9752|
@@ -115,6 +117,7 @@ Finally the parameters are as below:
 | hog_feat | spatial_feat | hist_feat | color_sapce | orient | pix_per_cell | cell_per_block | hog_channel | Test Accuracy |
 |:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:|
 | True | True | True| YCrCb |11| 8 |2| ALL| 0.9901|
+
 
 #### 3. Describe how (and identify where in your code) you trained a classifier using your selected HOG features (and color features if you used them).
 
@@ -153,7 +156,7 @@ Here's a [link to my project video result](./project_video-out.mp4)
 here is images to show this flow:
 ![alt text][image6]
 
-and here is final code to process image:
+and here is final code to process a single image:
 ```python
 def process_image(img):
     boxes_list=[]
@@ -187,6 +190,35 @@ def process_image(img):
     labels = label(heat_img)    
     draw_img = draw_labeled_bboxes(np.copy(img), labels)
     return draw_img
+```
+2. When process the image in the videos, I do as below in `def process_image(img, is_video)`:
+```python
+from collections import deque
+heatmaps = deque(maxlen = 4)
+...
+heat_img = add_heat(heat_img, boxes)
+    if is_video:
+            global heatmaps
+            heatmaps.append(heat_img)
+            combined = sum(heatmaps)
+            threshold = 2
+            if len(heatmaps) == 1:                
+                threshold = 2;
+            elif len(heatmaps) == 2:
+                threshold = 4;
+            elif len(heatmaps) == 3:
+                threshold = 4;
+            elif len(heatmaps) == 4:
+                threshold = 10;
+            heat_img = apply_threshold(combined,threshold)
+    else:
+        heat_img = apply_threshold(heat_img,1)
+```
+3. And then, I think that the car which on the other land don't need to detect. Because there is a green belt in the middle of the road
+sO I set :
+```
+    xstart = 500
+    xstop = 1280 
 ```
 ---
 
